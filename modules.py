@@ -37,16 +37,16 @@ from google.cloud import bigquery
 from google.cloud.bigquery import Dataset
 
 
-COMPUTE_INSTANCE_LABEL_KEY = os.environ["COMPUTE_INSTANCE_LABEL_KEY"]
-CONTAINER_CLUSTER_LABEL_KEY = os.environ["CONTAINER_CLUSTER_LABEL_KEY"]
-STORAGE_BUCKET_LABEL_KEY = os.environ["STORAGE_BUCKET_LABEL_KEY"]
-SQLADMIN_INSTANCE_LABEL_KEY = os.environ["SQLADMIN_INSTANCE_LABEL_KEY"]
-BQ_DATASET_LABEL_KEY = os.environ["BQ_DATASET_LABEL_KEY"]
+#COMPUTE_INSTANCE_LABEL_KEY = os.environ["COMPUTE_INSTANCE_LABEL_KEY"]
+#CONTAINER_CLUSTER_LABEL_KEY = os.environ["CONTAINER_CLUSTER_LABEL_KEY"]
+#STORAGE_BUCKET_LABEL_KEY = os.environ["STORAGE_BUCKET_LABEL_KEY"]
+#SQLADMIN_INSTANCE_LABEL_KEY = os.environ["SQLADMIN_INSTANCE_LABEL_KEY"]
+#BQ_DATASET_LABEL_KEY = os.environ["BQ_DATASET_LABEL_KEY"]
 # Label Compute Engine VMs
 # https://cloud.google.com/compute/docs/instances/instance-life-cycle
-def label_compute_instance(project,asset_name):
+def label_compute_instance(project,asset_name, labelkey):
 
-    label_key=COMPUTE_INSTANCE_LABEL_KEY
+    label_key = labelkey
 
     # Here is a sample asset_name
     # "//compute.googleapis.com/projects/project-id-286220/zones/us-central1-a/instances/instance-4"
@@ -113,10 +113,10 @@ def label_compute_instance(project,asset_name):
 
 # Label Compute Engine VMs
 # https://cloud.google.com/compute/docs/instances/instance-life-cycle
-def label_compute_instance_disk(project, disk_name, users):
+def label_compute_instance_disk(project, disk_name, users, labelkey):
 
     usersjson = json.loads(users)
-    label_key=COMPUTE_INSTANCE_LABEL_KEY
+    label_key = labelkey
 
     # Here is a sample asset_name
     # "//compute.googleapis.com/projects/project-id-286220/zones/us-central1-a/instances/instance-4"
@@ -186,9 +186,9 @@ def label_compute_instance_disk(project, disk_name, users):
             print({"service_set_labels_response":service_set_labels_response})
 
 
-def label_compute_instance_disk_o(project, disk_name, users):
+def label_compute_orphan_disk(project, disk_name, users, labelkey):
 
-    label_key=COMPUTE_INSTANCE_LABEL_KEY
+    label_key = labelkey
 
     # Here is a sample asset_name
     # "//compute.googleapis.com/projects/project-id-286220/zones/us-central1-a/instances/instance-4"
@@ -253,12 +253,12 @@ def label_compute_instance_disk_o(project, disk_name, users):
 
 # Label Cloud SQL instance
 # https://cloud.google.com/sql/docs/sqlserver/label-instance
-def label_sqladmin_instance(project, asset_name):
+def label_sqladmin_instance(project, asset_name, labelkey):
 
     #asset_resource_data_state = status
 
     #if asset_resource_data_state == "RUNNABLE":
-    label_key=SQLADMIN_INSTANCE_LABEL_KEY
+    label_key = labelkey
 
     # Here is a sample asset_name
     # "//cloudsql.googleapis.com/projects/project-id-305922/instances/test3"
@@ -318,8 +318,8 @@ def label_sqladmin_instance(project, asset_name):
 
 # Label Cloud Storage buckets
 # https://cloud.google.com/storage/docs/using-bucket-labels
-def label_storage_bucket(asset_name):
-    label_key=STORAGE_BUCKET_LABEL_KEY
+def label_storage_bucket(asset_name, labelkey):
+    label_key = labelkey
 
     # Here is a sample asset_name
     # "//storage.googleapis.com/project-id-305922-gcs"
@@ -371,9 +371,9 @@ def label_storage_bucket(asset_name):
         print({"service_set_labels_response":service_set_labels_response})
 
 
-def label_bq_dataset(project, asset_name):
+def label_bq_dataset(project, asset_name,labelkey):
 
-    label_key=BQ_DATASET_LABEL_KEY
+    label_key = labelkey
 
     # Here is a sample asset_name
     # "//cloudsql.googleapis.com/projects/project-id-305922/datasets/test3"
