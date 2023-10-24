@@ -1,0 +1,16 @@
+title: ResourceLabelerRole
+description: Resource Labeler Role
+stage: GA
+includedPermissions:
+- bigquery.datasets.get
+- bigquery.datasets.update
+- cloudsql.instances.get
+- cloudsql.instances.update
+- compute.disks.get
+- compute.disks.setLabels
+- compute.instances.get
+- compute.instances.setLabels
+- container.clusters.get
+- container.clusters.update
+- storage.buckets.get
+- storage.buckets.update

@@ -27,27 +27,27 @@ def ResourceLabeler(event, context):
         assets1 = query_job.result()  # Waits for query to finish
 
         for asset in assets1:
-            if asset.type == 'compute.googleapis.com/Instance' and "gces" in variables['ResourceType']:
+            if asset.type == 'compute.googleapis.com/Instance' and "compute.googleapis.com/Instance" in variables['ResourceType']:
                 print("Working on a GCE")
-                label_compute_instance(project,asset.longname)
+                label_compute_instance(project,asset.longname,variables['labelkey'])
                 print("End GCE")
-            elif asset.type == 'compute.googleapis.com/Disk' and "gcedisks" in variables['ResourceType'] and asset.users is not None:
+            elif asset.type == 'compute.googleapis.com/Disk' and "compute.googleapis.com/Disk" in variables['ResourceType'] and asset.users is not None:
                 print("Working on a GCE DISK")
-                label_compute_instance_disk(project,asset.longname,asset.users)
+                label_compute_instance_disk(project,asset.longname,asset.users,variables['labelkey'])
                 print("End GCE DISK")
-            elif asset.type == 'compute.googleapis.com/Disk' and "gcedisks" in variables['ResourceType'] and asset.users is None:
+            elif asset.type == 'compute.googleapis.com/Disk' and "compute.googleapis.com/Disk" in variables['ResourceType'] and asset.users is None:
                 print("Working on Orphan GCE DISK")
-                label_compute_instance_disk_o(project,asset.longname,"orphan")
+                label_compute_orphan_disk(project,asset.longname,"orphan",variables['labelkey'])
                 print("End Orphan GCE DISK")
             elif asset.type == 'sqladmin.googleapis.com/Instance' and asset.status == "RUNNABLE" and asset.activationPolicy == "ALWAYS" and "gcsqls" in variables['ResourceType']:
                 print("Working on a GCSQL")
-                label_sqladmin_instance(project,asset.longname)
+                label_sqladmin_instance(project,asset.longname,variables['labelkey'])
                 print("End GCSQL")
-            elif asset.type == 'storage.googleapis.com/Bucket' and "buckets" in variables['ResourceType']:
+            elif asset.type == 'storage.googleapis.com/Bucket' and "storage.googleapis.com/Bucket" in variables['ResourceType']:
                 print("Working on a GCS")
-                label_storage_bucket(asset.longname)
+                label_storage_bucket(asset.longname,variables['labelkey'])
                 print("End GCS")
-            elif asset.type == 'bigquery.googleapis.com/Dataset' and "datasets" in variables['ResourceType']:
+            elif asset.type == 'bigquery.googleapis.com/Dataset' and "bigquery.googleapis.com/Dataset" in variables['ResourceType']:
                 print("Working on a BQDS")
-                label_bq_dataset(project,asset.longname)
+                label_bq_dataset(project,asset.longname,variables['labelkey'])
                 print("End BQDS")
