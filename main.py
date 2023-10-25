@@ -7,7 +7,7 @@ import json
 
 logger = logging.getLogger()
 
-def ResourceLabeler(event, context):
+def AssetLabeler(event, context):
 
     variables = get_variables_dynamic(event)
     client = bigquery.Client()
@@ -29,25 +29,25 @@ def ResourceLabeler(event, context):
         for asset in assets1:
             if asset.type == 'compute.googleapis.com/Instance' and "compute.googleapis.com/Instance" in variables['ResourceType']:
                 print("Working on a GCE")
-                label_compute_instance(project,asset.longname,variables['labelkey'])
+                label_compute_instance(project,asset.longname,variables['LabelKey'],variables['LabelValue'])
                 print("End GCE")
             elif asset.type == 'compute.googleapis.com/Disk' and "compute.googleapis.com/Disk" in variables['ResourceType'] and asset.users is not None:
                 print("Working on a GCE DISK")
-                label_compute_instance_disk(project,asset.longname,asset.users,variables['labelkey'])
+                label_compute_instance_disk(project,asset.longname,asset.users,variables['LabelKey'],variables['LabelValue'])
                 print("End GCE DISK")
             elif asset.type == 'compute.googleapis.com/Disk' and "compute.googleapis.com/Disk" in variables['ResourceType'] and asset.users is None:
                 print("Working on Orphan GCE DISK")
-                label_compute_orphan_disk(project,asset.longname,"orphan",variables['labelkey'])
+                label_compute_orphan_disk(project,asset.longname,"orphan",variables['LabelKey'],variables['LabelValue'])
                 print("End Orphan GCE DISK")
-            elif asset.type == 'sqladmin.googleapis.com/Instance' and asset.status == "RUNNABLE" and asset.activationPolicy == "ALWAYS" and "gcsqls" in variables['ResourceType']:
+            elif asset.type == 'sqladmin.googleapis.com/Instance' and asset.status == "RUNNABLE" and asset.activationPolicy == "ALWAYS" and "sqladmin.googleapis.com/Instance" in variables['ResourceType']:
                 print("Working on a GCSQL")
-                label_sqladmin_instance(project,asset.longname,variables['labelkey'])
+                label_sqladmin_instance(project,asset.longname,variables['LabelKey'],variables['LabelValue'])
                 print("End GCSQL")
             elif asset.type == 'storage.googleapis.com/Bucket' and "storage.googleapis.com/Bucket" in variables['ResourceType']:
                 print("Working on a GCS")
-                label_storage_bucket(asset.longname,variables['labelkey'])
+                label_storage_bucket(asset.longname,variables['LabelKey'],variables['LabelValue'])
                 print("End GCS")
             elif asset.type == 'bigquery.googleapis.com/Dataset' and "bigquery.googleapis.com/Dataset" in variables['ResourceType']:
                 print("Working on a BQDS")
-                label_bq_dataset(project,asset.longname,variables['labelkey'])
+                label_bq_dataset(project,asset.longname,variables['LabelKey'],variables['LabelValue'])
                 print("End BQDS")
