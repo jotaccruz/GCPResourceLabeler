@@ -44,7 +44,7 @@ from google.cloud.bigquery import Dataset
 #BQ_DATASET_LABEL_KEY = os.environ["BQ_DATASET_LABEL_KEY"]
 # Label Compute Engine VMs
 # https://cloud.google.com/compute/docs/instances/instance-life-cycle
-def label_compute_instance(project,asset_name, labelkey):
+def label_compute_instance(project,asset_name, labelkey, labelvalue):
 
     label_key = labelkey
 
@@ -89,7 +89,8 @@ def label_compute_instance(project,asset_name, labelkey):
         print("Current labelFingerprint={} labels={}".format(labelFingerprint,json.dumps(labels)))
 
         #labelvalue = project_id + "_" + instance_id
-        labelvalue = instance_id
+        if labelvalue == "itself":
+            labelvalue = instance_id
 
         if label_key in labels and labels[label_key] == labelvalue:
             print("The same label key-value already exists.")
@@ -113,7 +114,7 @@ def label_compute_instance(project,asset_name, labelkey):
 
 # Label Compute Engine VMs
 # https://cloud.google.com/compute/docs/instances/instance-life-cycle
-def label_compute_instance_disk(project, disk_name, users, labelkey):
+def label_compute_instance_disk(project, disk_name, users, labelkey, labelvalue):
 
     usersjson = json.loads(users)
     label_key = labelkey
@@ -165,7 +166,8 @@ def label_compute_instance_disk(project, disk_name, users, labelkey):
         print("Current labelFingerprint={} labels={}".format(labelFingerprint,json.dumps(labels)))
 
         #labelvalue = project_id + "_" + instance_id
-        labelvalue = instance_id
+        if labelvalue == "itself":
+            labelvalue = instance_id
 
         if label_key in labels and labels[label_key] == labelvalue:
             print("The same label key-value already exists.")
@@ -186,7 +188,7 @@ def label_compute_instance_disk(project, disk_name, users, labelkey):
             print({"service_set_labels_response":service_set_labels_response})
 
 
-def label_compute_orphan_disk(project, disk_name, users, labelkey):
+def label_compute_orphan_disk(project, disk_name, users, labelkey, labelvalue):
 
     label_key = labelkey
 
@@ -253,7 +255,7 @@ def label_compute_orphan_disk(project, disk_name, users, labelkey):
 
 # Label Cloud SQL instance
 # https://cloud.google.com/sql/docs/sqlserver/label-instance
-def label_sqladmin_instance(project, asset_name, labelkey):
+def label_sqladmin_instance(project, asset_name, labelkey, labelvalue):
 
     #asset_resource_data_state = status
 
@@ -298,7 +300,8 @@ def label_sqladmin_instance(project, asset_name, labelkey):
         print("Current etag={} userLabels={}".format(etag,json.dumps(userLabels)))
 
         #labelvalue = project_id + "_" + instance_id
-        labelvalue = instance_id
+        if labelvalue == "itself":
+            labelvalue = instance_id
 
         if label_key in userLabels and userLabels[label_key] == labelvalue:
             print("The same label key-value already exists.")
@@ -318,7 +321,7 @@ def label_sqladmin_instance(project, asset_name, labelkey):
 
 # Label Cloud Storage buckets
 # https://cloud.google.com/storage/docs/using-bucket-labels
-def label_storage_bucket(asset_name, labelkey):
+def label_storage_bucket(asset_name, labelkey, labelvalue):
     label_key = labelkey
 
     # Here is a sample asset_name
@@ -355,7 +358,8 @@ def label_storage_bucket(asset_name, labelkey):
 
     print("Current etag={} labels={}".format(etag,json.dumps(labels)))
 
-    labelvalue = bucket.replace(".","_")
+    if labelvalue == "itself":
+        labelvalue = bucket.replace(".","_")
 
     if label_key in labels and labels[label_key] == labelvalue:
         print("The same label key-value already exists.")
@@ -371,7 +375,7 @@ def label_storage_bucket(asset_name, labelkey):
         print({"service_set_labels_response":service_set_labels_response})
 
 
-def label_bq_dataset(project, asset_name,labelkey):
+def label_bq_dataset(project, asset_name,labelkey, labelvalue):
 
     label_key = labelkey
 
@@ -415,7 +419,8 @@ def label_bq_dataset(project, asset_name,labelkey):
         print("Current labels={}".format(json.dumps(labels)))
 
         #labelvalue = project_id + "_" + dataset_id.lower()
-        labelvalue = dataset_id.lower()
+        if labelvalue == "itself":
+            labelvalue = dataset_id.lower()
 
         if label_key in labels and labels[label_key] == labelvalue:
             print("The same label key-value already exists.")
@@ -578,12 +583,14 @@ def get_variables_dynamic(event):
             variables['ResourceType'] = eventdata['ResourceType']
         if 'Date' in eventdata:
             variables['Date'] = eventdata['Date']
-        if 'labelkey' in eventdata:
-            variables['labelkey'] = eventdata['labelkey']
-        if 'labelvalue' in eventdata:
-            variables['labelvalue'] = eventdata['labelvalue']
+        if 'LabelKey' in eventdata:
+            variables['LabelKey'] = eventdata['LabelKey']
         else:
-            variables['table'] = 'assetinventory'
+            variables['LabelKey'] = "assetname"
+        if 'LabelValue' in eventdata:
+            variables['LabelValue'] = eventdata['LabelValue']
+        else:
+            variables['LabelValue'] = "itself"
     return variables
 
 
